@@ -1,0 +1,56 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c4474;
+    padding: 10px 40px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+.logo-and-title-part {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    height: 45px;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.link-part {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.link-part a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.link-part a:hover {
+    opacity: 0.8;
+}
+
+.login-btn {
+    background-color: #f9a825;
+    color: white !important;
+    padding: 8px 25px;
+    border-radius: 8px;
+    font-weight: bold !important;
+}
+
+.login-btn:hover {
+    background-color: #fbc02d;
+    opacity: 1 !important;
+}
