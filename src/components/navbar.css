@@ -36,8 +36,15 @@
     font-size: 0.95rem;
     font-weight: 500;
     transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
+.link-part a img {
+    height: 20px;
+    width: auto;
+}
 .link-part a:hover {
     opacity: 0.8;
 }
