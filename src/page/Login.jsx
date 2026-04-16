@@ -40,13 +40,13 @@ export default function Login() {
             className="toggle-group"
           >
             <ToggleButton value="students" className="toggle-btn">
-              <span>Students</span>
+              <h3>Students</h3>
             </ToggleButton>
             <ToggleButton value="school" className="toggle-btn">
-              <span>School</span>
+              <h3>School</h3>
             </ToggleButton>
             <ToggleButton value="entreprise" className="toggle-btn">
-              <span>Entreprise</span>
+              <h3>Entreprise</h3>
             </ToggleButton>
           </ToggleButtonGroup>
 
