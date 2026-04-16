@@ -1,0 +1,132 @@
+/* Container Layout */
+.login-page {
+  background-color: #F4F1E9; /* Light cream background from image */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Serif', 'Roboto', sans-serif;
+}
+
+.login-container {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  max-width: 1100px;
+  width: 90%;
+}
+
+/* Hero Section (Blue Card) */
+.hero-card {
+  background-color: #2D4676;
+  color: white;
+  padding: 60px 40px;
+  border-radius: 40px;
+  flex: 1;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.hero-title {
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  margin-bottom: 20px !important;
+}
+
+.highlight {
+  color: #F9A826; /* Gold color */
+}
+
+.hero-desc {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.hero-list {
+  list-style: none;
+  padding: 0;
+}
+
+.hero-list li {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-list li::before {
+  content: "●";
+  color: #F9A826;
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+/* Form Section (White Card) */
+.form-card {
+  background: white !important;
+  padding: 50px !important;
+  border-radius: 50px !important;
+  flex: 0.9;
+  min-width: 400px;
+}
+
+.form-title {
+  color: #2D4676;
+  margin-bottom: 30px !important;
+  font-family: serif !important;
+}
+
+/* Toggle Group Styling */
+.toggle-group {
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  margin-bottom: 30px !important;
+}
+
+.toggle-btn {
+  border: none !important;
+  flex-direction: column;
+  padding: 20px 0 !important;
+  text-transform: none !important;
+  color: #666 !important;
+}
+
+.toggle-btn.Mui-selected {
+  background-color: #2D4676 !important;
+  color: #F9A826 !important; /* Gold icons/text when active */
+}
+
+.toggle-btn span {
+  font-size: 0.75rem;
+  margin-top: 5px;
+}
+
+/* Form Inputs */
+.input-label {
+  color: #2D4676;
+  font-weight: 500;
+  margin-bottom: 8px !important;
+}
+
+.custom-input {
+  margin-bottom: 20px !important;
+}
+
+.custom-input .MuiOutlinedInput-root {
+  border-radius: 12px;
+}
+
+/* Submit Button */
+.login-submit {
+  background-color: #2D4676 !important;
+  text-transform: none !important;
+  padding: 12px !important;
+  border-radius: 10px !important;
+  font-size: 1.1rem !important;
+  margin-top: 10px !important;
+}
+
+.login-submit:hover {
+  background-color: #1e3155 !important;
+}
