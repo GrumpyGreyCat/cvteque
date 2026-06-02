@@ -37,7 +37,16 @@ export default function StudentProfile() {
                         <span className="profile-year">{student.year}</span>
                     </div>
                     <div className="profile-header-actions">
-                        <button className="btn-yellow">Contacter</button>
+                        {/* On remplace le <button> par un <a> avec mailto: */}
+                        <a 
+                            href={`mailto:${student.email}?subject=Contact depuis Hexagone CVthèque`} 
+                            className="btn-yellow" 
+                            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+                        >
+                            Contacter
+                        </a>
+
+                        {/* Le bouton CV marche déjà normalement car il a le href et le download */}
                         {studentCv && (
                             <a href={studentCv.url} download className="btn-white">Télécharger CV</a>
                         )}

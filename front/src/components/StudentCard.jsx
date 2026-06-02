@@ -13,7 +13,13 @@ export default function StudentCard({ student }) {
                 ))}
             </div>
             <div className="card-actions">
-                <button className="btn-contact">Contacter</button>
+                <a 
+                    href={`mailto:${student.email}?subject=Prise de contact - Hexagone`} 
+                    className="btn-contact"
+                    style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}
+                >
+                    Contacter
+                </a>
                 {/* On remplace le bouton par un lien qui pointe vers l'id de l'etudiant */}
                 <Link to={`/etudiant/${student.id}`} className="btn-profile" style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}>
                     Voir profil
