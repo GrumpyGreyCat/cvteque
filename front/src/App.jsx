@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
+import { DataProvider } from './context/DataContext';
 import Navbar from './components/navbar'
 import Login from './page/Login'
 import Landing from './page/Landing'
@@ -6,11 +7,14 @@ import TalentSearch from './page/TalentSearch';
 import JobSearch from './page/JobSearch';
 import PartnerSearch from './page/PartnerSearch'
 import Profile from './page/Profile'
+import StudentProfile from './page/StudentProfile';
+import AdminImport from './page/AdminImport';
 import './App.css'
 
 function App() {
   return (
     <>
+    <DataProvider>
       <Navbar />
       <Routes>
         <Route path='/' element={<Landing />} />
@@ -19,7 +23,10 @@ function App() {
         <Route path="/partenaires" element={<PartnerSearch />} />
         <Route path="/profil" element={<Profile />} />
         <Route path='/login' element={<Login />} />
+        <Route path="/etudiant/:id" element={<StudentProfile />} />
+        <Route path="/admin" element={<AdminImport />} />
       </Routes>
+    </DataProvider>
     </>
   )
 }

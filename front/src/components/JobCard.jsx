@@ -13,7 +13,13 @@ export default function JobCard({ job }) {
                 <span className="job-date">{job.date}</span>
             </div>
             <div className="job-actions">
-                <button className="btn-contact">Contacter</button>
+                <a 
+                    href={`mailto:recrutement@entreprise.com?subject=Candidature pour le poste : ${job.title}`} 
+                    className="btn-contact"
+                    style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}
+                >
+                    Postuler
+                </a>
                 <button className="btn-profile">Voir l'offre</button>
             </div>
         </div>
