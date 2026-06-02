@@ -12,7 +12,8 @@ export default function JobSearch() {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    
+    const [selectedJob, setSelectedJob] = useState(null);
+
     const itemsPerPage = 5;
 
     // 2. Guardrail: Hold rendering until Symfony background fetches complete
@@ -27,7 +28,7 @@ export default function JobSearch() {
     // 3. Defensive Filtering: Guard against missing or undefined properties from PostgreSQL data entries
     const filteredJobs = mockJobs.filter(job => {
         const searchLower = searchTerm.toLowerCase();
-        
+
         return (
             (job.title?.toLowerCase().includes(searchLower) || false) ||
             (job.company?.toLowerCase().includes(searchLower) || false) ||
@@ -39,7 +40,7 @@ export default function JobSearch() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentJobs = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
-    
+
     const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
 
     // Dynamic metrics calculation for stats row counters
@@ -49,9 +50,9 @@ export default function JobSearch() {
 
     return (
         <div className="page-container">
-            <HeaderBanner 
-                title="Recherche d'entreprises" 
-                subtitle="Trouvez les offres qui correspondent à vos besoins" 
+            <HeaderBanner
+                title="Recherche d'entreprises"
+                subtitle="Trouvez les offres qui correspondent à vos besoins"
             />
 
             <div className="stats-row">
@@ -61,9 +62,9 @@ export default function JobSearch() {
             </div>
 
             <div className="search-bar-container">
-                <input 
-                    type="text" 
-                    placeholder="rechercher par domaines, nom, ..." 
+                <input
+                    type="text"
+                    placeholder="rechercher par domaines, nom, ..."
                     className="main-search-input"
                     value={searchTerm}
                     onChange={(e) => {
@@ -75,17 +76,17 @@ export default function JobSearch() {
 
             <div className="job-list">
                 {currentJobs.length === 0 && <p>Aucune offre trouvée.</p>}
-                
+
                 {currentJobs.map(job => (
-                    <JobCard key={job.id} job={job} />
+                    <JobCard key={job.id} job={job} onViewOffer={setSelectedJob} />
                 ))}
             </div>
 
             {totalPages > 1 && (
                 <div className="pagination" style={{ textAlign: 'center', marginTop: '30px' }}>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-                        <button 
-                            key={number} 
+                        <button
+                            key={number}
                             onClick={() => setCurrentPage(number)}
                             style={{
                                 margin: '0 5px',
@@ -100,6 +101,53 @@ export default function JobSearch() {
                             {number}
                         </button>
                     ))}
+                </div>
+            )}
+
+            {selectedJob && (
+                <div
+                    className="job-modal-overlay"
+                    role="presentation"
+                    onClick={() => setSelectedJob(null)}
+                >
+                    <div
+                        className="job-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="job-modal-title"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <button
+                            className="job-modal-close"
+                            type="button"
+                            aria-label="Fermer l'offre"
+                            onClick={() => setSelectedJob(null)}
+                        >
+                            ×
+                        </button>
+
+                        <div className="job-modal-header">
+                            <span className="tag-type">{selectedJob.type}</span>
+                            <span className="job-modal-date">{selectedJob.date}</span>
+                        </div>
+
+                        <h2 id="job-modal-title">{selectedJob.title}</h2>
+                        <p className="job-modal-company">
+                            {selectedJob.company} • {selectedJob.location} • {selectedJob.duration}
+                        </p>
+
+                        <div className="job-modal-section">
+                            <h3>Description de l'offre</h3>
+                            <p>{selectedJob.desc}</p>
+                        </div>
+
+                        <a
+                            href={`mailto:recrutement@entreprise.com?subject=Candidature pour le poste : ${selectedJob.title}`}
+                            className="job-modal-apply"
+                        >
+                            Postuler
+                        </a>
+                    </div>
                 </div>
             )}
         </div>
