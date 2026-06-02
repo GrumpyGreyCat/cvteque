@@ -1,10 +1,26 @@
 import { useParams } from 'react-router-dom';
 import './studentProfile.css';
-import { mockStudents, mockCvs } from '../data/mockData';
+// Import the live data hooks from your updated mockData file
+import { useMockStudents, useMockCvs, useIsDatabaseLoading } from '../data/mockData';
 
 export default function StudentProfile() {
     const { id } = useParams();
     
+    // 1. Initialize live states from our global database cache
+    const mockStudents = useMockStudents();
+    const mockCvs = useMockCvs();
+    const isLoading = useIsDatabaseLoading();
+
+    // 2. Guardrail: Hold rendering until Symfony background fetches complete
+    if (isLoading) {
+        return (
+            <div className="page-container" style={{ textAlign: 'center', padding: '50px' }}>
+                <h2>Chargement du profil...</h2>
+            </div>
+        );
+    }
+
+    // 3. Find matching entities within the synchronized lists
     const student = mockStudents.find(s => s.id === parseInt(id));
 
     if (!student) {
@@ -48,7 +64,7 @@ export default function StudentProfile() {
                             <div className="cv-box">
                                 <div className="cv-file-info">
                                     <span>{studentCv.name}</span>
-                                    <span className="cv-size">{studentCv.size}</span>
+                                    <span className="cv-size">{studentCv.size || 'PDF'}</span>
                                 </div>
                                 <span className="cv-type">Document pdf</span>
                                 <a href={studentCv.url} download className="btn-yellow-small">Télécharger</a>
@@ -75,29 +91,37 @@ export default function StudentProfile() {
                 <div className="profile-right-col">
                     <div className="profile-card">
                         <h3 className="section-title">Parcours académiques</h3>
-                        {student.education?.map((edu, index) => (
-                            <div key={index} className="timeline-item">
-                                <div className="timeline-dot"></div>
-                                <div className="timeline-content">
-                                    <h4>{edu.title}</h4>
-                                    <p>{edu.school}<br/>{edu.dates} • {edu.location}</p>
+                        {student.education && student.education.length > 0 ? (
+                            student.education.map((edu, index) => (
+                                <div key={index} className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <div className="timeline-content">
+                                        <h4>{edu.title}</h4>
+                                        <p>{edu.school}<br/>{edu.dates} • {edu.location}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p style={{ color: '#666', fontStyle: 'italic' }}>Aucun parcours académique renseigné.</p>
+                        )}
                     </div>
 
                     <div className="profile-card">
                         <h3 className="section-title">Expériences professionnelles</h3>
-                        {student.experience?.map((exp, index) => (
-                            <div key={index} className="timeline-item">
-                                <div className="timeline-dot"></div>
-                                <div className="timeline-content">
-                                    <h4>{exp.title}</h4>
-                                    <p>{exp.company} • {exp.location}<br/>{exp.dates}</p>
-                                    <p className="exp-desc">{exp.desc}</p>
+                        {student.experience && student.experience.length > 0 ? (
+                            student.experience.map((exp, index) => (
+                                <div key={index} className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <div className="timeline-content">
+                                        <h4>{exp.title}</h4>
+                                        <p>{exp.company} • {exp.location}<br/>{exp.dates}</p>
+                                        <p className="exp-desc">{exp.desc}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p style={{ color: '#666', fontStyle: 'italic' }}>Aucune expérience professionnelle renseignée.</p>
+                        )}
                     </div>
 
                     <div className="profile-card">
@@ -120,11 +144,15 @@ export default function StudentProfile() {
                     <div className="profile-card">
                         <h3 className="section-title">Compétences & technologies</h3>
                         <div className="skills-section">
-                            <p className="skills-label">Tags sélectionnés ({student.skills.length})</p>
+                            <p className="skills-label">Tags sélectionnés ({student.skills ? student.skills.length : 0})</p>
                             <div className="skills-container">
-                                {student.skills.map((skill, index) => (
-                                    <span key={index} className="skill-pill">{skill}</span>
-                                ))}
+                                {student.skills && student.skills.length > 0 ? (
+                                    student.skills.map((skill, index) => (
+                                        <span key={index} className="skill-pill">{skill}</span>
+                                    ))
+                                ) : (
+                                    <span style={{ color: '#666', fontStyle: 'italic' }}>Aucune compétence répertoriée</span>
+                                )}
                             </div>
                         </div>
                     </div>

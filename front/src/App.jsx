@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
+import { DataProvider } from './context/DataContext';
 import Navbar from './components/navbar'
 import Login from './page/Login'
 import Landing from './page/Landing'
@@ -12,6 +13,7 @@ import './App.css'
 function App() {
   return (
     <>
+    <DataProvider>
       <Navbar />
       <Routes>
         <Route path='/' element={<Landing />} />
@@ -22,6 +24,7 @@ function App() {
         <Route path="/etudiant/:id" element={<StudentProfile />} />
         <Route path="/admin" element={<AdminImport />} />
       </Routes>
+    </DataProvider>
     </>
   )
 }
