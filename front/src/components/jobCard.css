@@ -15,3 +15,31 @@
 .job-content p { font-size: 14px; margin-bottom: 15px; }
 .job-date { font-size: 12px; color: #aaa; }
 .job-actions { display: flex; flex-direction: column; gap: 10px; width: 150px; }
+.btn-contact {
+    background: #f0a500;
+    border: none;
+    padding: 8px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-profile {
+    background: white;
+    border: 1px solid #2b4c7e;
+    padding: 8px;
+    color: #2b4c7e;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .job-card {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .job-actions {
+        width: 100%;
+    }
+}
