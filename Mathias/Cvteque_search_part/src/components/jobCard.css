@@ -1,0 +1,17 @@
+.job-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.job-content h3 { margin: 0 0 10px 0; }
+.job-tags { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; font-size: 13px; }
+.tag-type { background: #f0a500; color: white; padding: 3px 8px; border-radius: 5px; }
+.tag-company { color: gray; }
+.job-content p { font-size: 14px; margin-bottom: 15px; }
+.job-date { font-size: 12px; color: #aaa; }
+.job-actions { display: flex; flex-direction: column; gap: 10px; width: 150px; }
