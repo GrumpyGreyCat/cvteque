@@ -3,13 +3,11 @@ import './talentSearch.css';
 import HeaderBanner from '../components/HeaderBanner';
 import FilterSidebar from '../components/FilterSidebar';
 import StudentCard from '../components/StudentCard';
-import { useMockStudents, useIsDatabaseLoading } from '../data/mockData';
+import { useDatabase } from '../context/DataContext';
 
 export default function TalentSearch() {
-    const mockStudents = useMockStudents(); 
-    const isLoading = useIsDatabaseLoading();
+    const { students, loading } = useDatabase(); 
 
-    // 1. CRITICAL FIX: All Hooks must run BEFORE any conditional return lines!
     const [searchTerm, setSearchTerm] = useState('');
     const [location, setLocation] = useState('');
     const [selectedSkills, setSelectedSkills] = useState([]);
@@ -17,9 +15,8 @@ export default function TalentSearch() {
     
     const itemsPerPage = 14;
 
-    // 2. Safe check for Loading state
-    if (isLoading) {
-        return <div style={{ textAlign: 'center', padding: '50px' }}>Chargement de l'application...</div>;
+    if (loading) {
+        return <div style={{ textAlign: 'center', padding: '50px' }}>Chargement des talents...</div>;
     }
 
     const toggleSkill = (skill) => {
@@ -31,8 +28,8 @@ export default function TalentSearch() {
         setCurrentPage(1);
     };
 
-    // 3. Defensive Filtering: Guard against undefined/null database attributes
-    const filteredStudents = mockStudents.filter(student => {
+
+    const filteredStudents = students.filter(student => {
         const searchLower = searchTerm.toLowerCase();
         
         const matchSearch = (student.name?.toLowerCase().includes(searchLower) || false) || 
@@ -40,10 +37,12 @@ export default function TalentSearch() {
                             
         const matchLocation = (student.location?.toLowerCase().includes(location.toLowerCase()) || false);
         
-        // Smarter skills filter: If no sidebar skill is active, pass through automatically.
-        // Otherwise, cross-reference the student's dynamic skills array safely.
         const matchSkills = selectedSkills.length === 0 || 
-                            selectedSkills.every(skill => student.skills?.includes(skill));
+                            selectedSkills.every(selectedSkill => 
+                                student.skills?.some(studentSkill => 
+                                    studentSkill.toLowerCase() === selectedSkill.toLowerCase()
+                                )
+                            );
 
         return matchSearch && matchLocation && matchSkills;
     });

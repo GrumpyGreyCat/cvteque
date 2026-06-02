@@ -75,12 +75,19 @@ class Students implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'student_id')]
     private Collection $projects;
 
+    /**
+     * @var Collection<int, Skills>
+     */
+    #[ORM\ManyToMany(targetEntity: Skills::class, inversedBy: 'students')]
+    private Collection $skills;
+
     public function __construct()
     {
         $this->cvs_id = new ArrayCollection();
         $this->education = new ArrayCollection();
         $this->experiences = new ArrayCollection();
         $this->projects = new ArrayCollection();
+        $this->skills = new ArrayCollection();
     }
 
     // =========================================================================
@@ -353,6 +360,36 @@ class Students implements UserInterface, PasswordAuthenticatedUserInterface
                 $project->setStudentId(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skills>
+     */
+   public function getSkills(): array
+    {
+        $skillsArray = [];
+        
+        foreach ($this->skills as $skill) {
+            $skillsArray[] = $skill->getName(); 
+        }
+
+        return $skillsArray;
+    }
+
+    public function addSkill(Skills $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skills $skill): static
+    {
+        $this->skills->removeElement($skill);
+
         return $this;
     }
 }

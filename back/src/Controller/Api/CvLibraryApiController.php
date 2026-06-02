@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-// Using your exact plural repositories
+// Repositories au pluriel
 use App\Repository\StudentsRepository;
 use App\Repository\CvsRepository;
 use App\Repository\JobsRepository;
@@ -22,7 +22,6 @@ class CvLibraryApiController extends AbstractController
 
         foreach ($students as $student) {
             $educationData = [];
-            // Dynamically checking if the getter is singular or plural to prevent compilation crashes
             $eduMethod = method_exists($student, 'getEducation') ? 'getEducation' : (method_exists($student, 'getEducations') ? 'getEducations' : null);
             if ($eduMethod) {
                 foreach ($student->$eduMethod() as $edu) {
@@ -53,13 +52,20 @@ class CvLibraryApiController extends AbstractController
             $projMethod = method_exists($student, 'getProject') ? 'getProject' : (method_exists($student, 'getProjects') ? 'getProjects' : null);
             if ($projMethod) {
                 foreach ($student->$projMethod() as $proj) {
+                    // Si tes projets ont des tags ou des skills associés plus tard :
+                    $projectTags = method_exists($proj, 'getTags') ? $proj->getTags() : (method_exists($proj, 'getSkills') ? $proj->getSkills() : []);
+                    
                     $projectData[] = [
                         'title' => $proj->getTitle(),
                         'desc' => method_exists($proj, 'getDescription') ? $proj->getDescription() : '',
-                        'tags' => [] 
+                        'tags' => $projectTags 
                     ];
                 }
             }
+
+            // DÉTERMINATION DES SKILLS DE L'ÉTUDIANT
+            // On appelle le getSkills() personnalisé de ton entité (qui convertit la collection en tableau de strings)
+            $skillsData = method_exists($student, 'getSkills') ? $student->getSkills() : [];
 
             $responseData[] = [
                 'id' => $student->getId(),
@@ -72,7 +78,10 @@ class CvLibraryApiController extends AbstractController
                 'location' => method_exists($student, 'getLocation') ? $student->getLocation() : '',
                 'year' => method_exists($student, 'getYear') ? $student->getYear() : '',
                 'desc' => method_exists($student, 'getDescription') ? $student->getDescription() : '',
-                'skills' => [], 
+                
+                // CHANGEMENT ICI : La liste n'est plus un tableau vide [] codé en dur !
+                'skills' => $skillsData, 
+                
                 'education' => $educationData,
                 'experience' => $experienceData,
                 'projects' => $projectData,
@@ -89,7 +98,6 @@ class CvLibraryApiController extends AbstractController
         $responseData = [];
 
         foreach ($cvs as $cv) {
-            // Check structural relationship name variations safely
             $studentId = null;
             if (method_exists($cv, 'getStudendId') && $cv->getStudendId()) {
                 $studentId = $cv->getStudendId()->getId();

@@ -26,7 +26,6 @@ export default function Login() {
     setError(null);
     setLoading(true);
 
-    // Détermination dynamique de l'endpoint selon le type d'utilisateur sélectionné
     let loginUrl = 'http://127.0.0.1:8000/api/login';
     if (userType === 'school') loginUrl = 'http://127.0.0.1:8000/api/login-school';
     if (userType === 'entreprise') loginUrl = 'http://127.0.0.1:8000/api/login-company';
