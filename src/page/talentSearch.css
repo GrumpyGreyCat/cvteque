@@ -1,0 +1,16 @@
+.page-container {
+    background-color: #f7f3e8; /* couleur beige du fond */
+    min-height: 100vh;
+    padding: 30px 50px;
+    font-family: sans-serif;
+}
+.search-bar-container { margin-bottom: 20px; }
+.main-search-input { width: 100%; padding: 15px; border-radius: 8px; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.talent-layout { display: flex; gap: 20px; }
+.talent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    flex-grow: 1;
+}
+.pagination { text-align: center; margin-top: 40px; color: #555; }

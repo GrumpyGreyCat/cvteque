@@ -2,6 +2,9 @@ import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/navbar'
 import Login from './page/Login'
 import Landing from './page/Landing'
+import TalentSearch from './page/TalentSearch';
+import JobSearch from './page/JobSearch';
+import PartnerSearch from './page/PartnerSearch'
 import './App.css'
 
 function App() {
@@ -10,6 +13,9 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Landing />} />
+        <Route path="/etudiants" element={<TalentSearch />} />
+        <Route path="/emplois" element={<JobSearch />} />
+        <Route path="/partenaires" element={<PartnerSearch />} />
         <Route path='/login' element={<Login />} />
       </Routes>
     </>

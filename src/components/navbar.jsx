@@ -12,9 +12,12 @@ export default function Navbar() {
               </div>
             </Link>
             <div className="link-part">
-                <a href="#">Rechercher</a>
-                <a href="#">Écoles</a>
-                <a href="#">Entreprises</a>
+                <Link to='/etudiants'>Etudiants</Link>
+                
+                <Link to='/emplois'>Emplois</Link>
+                
+                <Link to='/partenaires'>Partenaires</Link>
+                
                 <Link to="/login" className="login-btn">Connexion</Link>
             </div>
         </nav>
