@@ -1,5 +1,3 @@
-/* Note: utilise aussi .page-container et .main-search-input definis plus haut, 
-tu peux les mettre dans un index.css ou App.css global pour ne pas repeter */
 
 .stats-row {
     display: flex;

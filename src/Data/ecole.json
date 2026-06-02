@@ -1,0 +1,116 @@
+[
+  {
+    "email": "alexandre.dupont@hexagone.edu",
+    "password": "password123",
+    "name": "Alexandre Dupont",
+    "school": "Hexagone - École Supérieure d'Informatique",
+    "location": "Marseille, France",
+    "year": "2ème année",
+    "description": "Développeur full-stack passionné par les technologies JavaScript. Je recherche une alternance pour la rentrée prochaine.",
+    "phone": "+33 6 11 22 33 44",
+    "linkedin": "linkedin.com/in/alexandredupont",
+    "github": "github.com/alexandredupont",
+    "skills": ["React", "Node.js", "MongoDB", "Express"],
+    "education": [
+      { 
+        "title": "BTS SIO Option SLAM", 
+        "school": "Lycée Gaston Berger", 
+        "dates": "2021 - 2023", 
+        "location": "Marseille" 
+      }
+    ],
+    "experience": [
+      { 
+        "title": "Stage Développeur Web", 
+        "company": "WebSud", 
+        "dates": "Mai 2023 - Juillet 2023", 
+        "location": "Marseille", 
+        "description": "Création d'un intranet pour les employés avec React." 
+      }
+    ],
+    "projects": [
+      { 
+        "title": "Gestionnaire de tâches", 
+        "description": "Application web pour gérer ses to-do lists en temps réel.", 
+        "tags": ["React", "Firebase"] 
+      }
+    ]
+  },
+  {
+    "email": "sarah.connor@universite.fr",
+    "password": "password123",
+    "name": "Sarah Connor",
+    "school": "Université de Lyon",
+    "location": "Lyon, France",
+    "year": "Master 1",
+    "description": "Spécialisée en Data Science et Machine Learning. Forte appétence pour l'analyse de données complexes.",
+    "phone": "+33 6 99 88 77 66",
+    "linkedin": "linkedin.com/in/sarahconnor-data",
+    "github": "github.com/sarahdata",
+    "skills": ["Python", "SQL", "Docker", "Linux"],
+    "education": [
+      { 
+        "title": "Licence Informatique", 
+        "school": "Université de Lyon", 
+        "dates": "2020 - 2023", 
+        "location": "Lyon" 
+      },
+      { 
+        "title": "Master Data Science", 
+        "school": "Université de Lyon", 
+        "dates": "2023 - 2025", 
+        "location": "Lyon" 
+      }
+    ],
+    "experience": [
+      { 
+        "title": "Alternance Data Analyst", 
+        "company": "DataCorp", 
+        "dates": "Septembre 2023 - Aujourd'hui", 
+        "location": "Lyon", 
+        "description": "Analyse des comportements utilisateurs et création de dashboards." 
+      }
+    ],
+    "projects": [
+      { 
+        "title": "Prédiction météo", 
+        "description": "Script Python utilisant le machine learning pour prédire la pluie.", 
+        "tags": ["Python", "Machine Learning"] 
+      }
+    ]
+  },
+  {
+    "email": "leo.martin@ecoledesign.com",
+    "password": "password123",
+    "name": "Léo Martin",
+    "school": "École de Design",
+    "location": "Nantes, France",
+    "year": "3ème année",
+    "description": "Designer UI/UX créatif. J'aime concevoir des interfaces accessibles et modernes.",
+    "phone": "+33 6 55 44 33 22",
+    "linkedin": "linkedin.com/in/leomartin-design",
+    "github": "",
+    "skills": ["Figma", "UI/UX", "Adobe XD", "HTML", "CSS"],
+    "education": [
+      { 
+        "title": "Bachelor Design Numérique", 
+        "school": "École de Design", 
+        "dates": "2022 - 2025", 
+        "location": "Nantes" 
+      }
+    ],
+    "experience": [],
+    "projects": [
+      { 
+        "title": "Redesign App Bancaire", 
+        "description": "Projet d'école : repenser totalement l'UX d'une application bancaire classique.", 
+        "tags": ["Figma", "UX Research"] 
+      },
+      { 
+        "title": "Maquette E-commerce", 
+        "description": "Création d'un design system complet pour une boutique de vêtements.", 
+        "tags": ["UI", "Design System"] 
+      }
+    ]
+  }
+]

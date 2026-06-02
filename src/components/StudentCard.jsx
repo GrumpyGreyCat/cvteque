@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './studentCard.css';
 
 export default function StudentCard({ student }) {
@@ -13,7 +14,10 @@ export default function StudentCard({ student }) {
             </div>
             <div className="card-actions">
                 <button className="btn-contact">Contacter</button>
-                <button className="btn-profile">Voir profil</button>
+                {/* On remplace le bouton par un lien qui pointe vers l'id de l'etudiant */}
+                <Link to={`/etudiant/${student.id}`} className="btn-profile" style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}>
+                    Voir profil
+                </Link>
             </div>
         </div>
     );
