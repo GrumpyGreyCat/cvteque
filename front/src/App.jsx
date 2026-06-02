@@ -22,7 +22,7 @@ function App() {
         <Route path="/emplois" element={<JobSearch />} />
         <Route path="/partenaires" element={<PartnerSearch />} />
         <Route path="/profil" element={<Profile />} />
-        <Route path='/login' element={<Login />} 
+        <Route path='/login' element={<Login />} />
         <Route path="/etudiant/:id" element={<StudentProfile />} />
         <Route path="/admin" element={<AdminImport />} />
       </Routes>
