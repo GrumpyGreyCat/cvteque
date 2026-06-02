@@ -7,16 +7,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: StudentsRepository::class)]
-class Students
+class Students implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)] // Ajout d'une contrainte unique recommandée pour la sécurité
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -81,6 +83,40 @@ class Students
         $this->projects = new ArrayCollection();
     }
 
+    // =========================================================================
+    // MÉTHODES REQUISES PAR USERINTERFACE & PASSWORDAUTHENTICATEDUSERINTERFACE
+    // =========================================================================
+
+    /**
+     * Retourne l'identifiant unique utilisé pour la sécurité (ici, l'email).
+     * Requis par UserInterface depuis Symfony 5.3+
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * Définit les rôles de l'utilisateur. Chaque utilisateur doit avoir au moins ROLE_USER.
+     */
+    public function getRoles(): array
+    {
+        // On renvoie un tableau contenant le rôle étudiant par défaut
+        return ['ROLE_STUDENT', 'ROLE_USER'];
+    }
+
+    /**
+     * Cette méthode sert à effacer des données sensibles stockées temporairement en clair.
+     */
+    public function eraseCredentials(): void
+    {
+        // Laissez vide si vous ne stockez pas de mot de passe en clair temporairement
+    }
+
+    // =========================================================================
+    // GETTERS & SETTERS EXISTANTS
+    // =========================================================================
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,7 +125,6 @@ class Students
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -101,19 +136,16 @@ class Students
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    public function getPassword(): ?string
+   public function getPassword(): string
     {
-        return $this->password;
+        return (string) $this->password;
     }
-
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -125,7 +157,6 @@ class Students
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -137,7 +168,6 @@ class Students
     public function setLocation(string $location): static
     {
         $this->location = $location;
-
         return $this;
     }
 
@@ -149,7 +179,6 @@ class Students
     public function setYear(string $year): static
     {
         $this->year = $year;
-
         return $this;
     }
 
@@ -161,7 +190,6 @@ class Students
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -173,7 +201,6 @@ class Students
     public function setPhone(string $phone): static
     {
         $this->phone = $phone;
-
         return $this;
     }
 
@@ -185,7 +212,6 @@ class Students
     public function setLinkedin(string $linkedin): static
     {
         $this->linkedin = $linkedin;
-
         return $this;
     }
 
@@ -197,7 +223,6 @@ class Students
     public function setGithub(string $github): static
     {
         $this->github = $github;
-
         return $this;
     }
 
@@ -209,7 +234,6 @@ class Students
     public function setCreatedAt(\DateTime $created_at): static
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
@@ -221,7 +245,6 @@ class Students
     public function setSchool(string $school): static
     {
         $this->school = $school;
-
         return $this;
     }
 
@@ -239,19 +262,16 @@ class Students
             $this->cvs_id->add($cvsId);
             $cvsId->setStudendId($this);
         }
-
         return $this;
     }
 
     public function removeCvsId(Cvs $cvsId): static
     {
         if ($this->cvs_id->removeElement($cvsId)) {
-            // set the owning side to null (unless already changed)
             if ($cvsId->getStudendId() === $this) {
                 $cvsId->setStudendId(null);
             }
         }
-
         return $this;
     }
 
@@ -269,19 +289,16 @@ class Students
             $this->education->add($education);
             $education->setStudentId($this);
         }
-
         return $this;
     }
 
     public function removeEducation(Education $education): static
     {
         if ($this->education->removeElement($education)) {
-            // set the owning side to null (unless already changed)
             if ($education->getStudentId() === $this) {
                 $education->setStudentId(null);
             }
         }
-
         return $this;
     }
 
@@ -299,19 +316,16 @@ class Students
             $this->experiences->add($experience);
             $experience->setStudentId($this);
         }
-
         return $this;
     }
 
     public function removeExperience(Experience $experience): static
     {
         if ($this->experiences->removeElement($experience)) {
-            // set the owning side to null (unless already changed)
             if ($experience->getStudentId() === $this) {
                 $experience->setStudentId(null);
             }
         }
-
         return $this;
     }
 
@@ -329,19 +343,16 @@ class Students
             $this->projects->add($project);
             $project->setStudentId($this);
         }
-
         return $this;
     }
 
     public function removeProject(Project $project): static
     {
         if ($this->projects->removeElement($project)) {
-            // set the owning side to null (unless already changed)
             if ($project->getStudentId() === $this) {
                 $project->setStudentId(null);
             }
         }
-
         return $this;
     }
 }

@@ -1,0 +1,34 @@
+security:
+    # 1. Gestion du hachage automatique des mots de passe
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # 2. Source de données des utilisateurs (notre entité Students)
+    providers:
+        app_student_provider:
+            entity:
+                class: App\Entity\Students
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+            
+        # 3. Pare-feu de ton API
+        main:
+            lazy: true
+            provider: app_student_provider
+            
+            # Intercepte l'authentification soumise en JSON par React
+            json_login:
+                check_path: api_login
+                username_path: email
+                password_path: password
+
+            logout:
+                path: api_logout
+
+    access_control:
+        # Tu pourras restreindre des routes ici plus tard si nécessaire
+        # - { path: ^/api/admin, roles: ROLE_ADMIN }
