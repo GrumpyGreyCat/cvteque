@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: cv
+    restart: always
+    environment:
+      POSTGRES_USER: cv_admin
+      POSTGRES_PASSWORD: cv_passwd
+      POSTGRES_DB: cv_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  postgres_data:
