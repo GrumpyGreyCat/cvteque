@@ -670,7 +670,7 @@ export default function Profile() {
     const currentLoggedIn = JSON.parse(sessionUser)
     
     // Recherche du profil complet actualisé via l'ID de la base de données
-    const matchingStudent = students.find(s => s.id === currentLoggedIn.id)
+    const matchingStudent = students.find(s => s.id == currentLoggedIn.id)
 
     if (matchingStudent) {
       setPersonal({

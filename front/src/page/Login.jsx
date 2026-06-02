@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import pour rediriger après connexion
 import { Typography, ToggleButton, ToggleButtonGroup, TextField, Button, Paper, Alert } from '@mui/material';
 import './Login.css';
+import { useDatabase } from '../context/DataContext';
 
 export default function Login() {
+  const { loginUser } = useDatabase();
   const [userType, setUserType] = useState('students');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,9 +27,9 @@ export default function Login() {
     setLoading(true);
 
     // Détermination dynamique de l'endpoint selon le type d'utilisateur sélectionné
-    let loginUrl = 'http://127.0.0.1:8001/api/login';
-    if (userType === 'school') loginUrl = 'http://127.0.0.1:8001/api/login-school';
-    if (userType === 'entreprise') loginUrl = 'http://127.0.0.1:8001/api/login-company';
+    let loginUrl = 'http://127.0.0.1:8000/api/login';
+    if (userType === 'school') loginUrl = 'http://127.0.0.1:8000/api/login-school';
+    if (userType === 'entreprise') loginUrl = 'http://127.0.0.1:8000/api/login-company';
 
     try {
       const response = await fetch(loginUrl, {
@@ -45,10 +47,8 @@ export default function Login() {
       const data = await response.json();
       console.log("Connexion réussie ! Données :", data);
 
-      // 1. Sauvegarder les informations de session dans le stockage du navigateur
-      localStorage.setItem('user', JSON.stringify({ ...data, type: userType }));
+      loginUser({ ...data, type: userType });
 
-      // 2. Redirection conditionnelle ou par défaut vers l'espace profil personnalisé
       navigate('/profil');
 
     } catch (err) {

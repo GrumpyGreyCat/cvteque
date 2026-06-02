@@ -28,7 +28,10 @@ security:
 
             logout:
                 path: api_logout
-
+        # config/packages/security.yaml
     access_control:
-        # Tu pourras restreindre des routes ici plus tard si nécessaire
-        # - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/students, roles: PUBLIC_ACCESS }
+        - { path: ^/api/cvs, roles: PUBLIC_ACCESS }
+        - { path: ^/api/jobs, roles: PUBLIC_ACCESS }
+        - { path: ^/api/schools, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
