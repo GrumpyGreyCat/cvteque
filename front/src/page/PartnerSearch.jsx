@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './PartnerSearch.css';
+import './partnerSearch.css';
 import HeaderBanner from '../components/HeaderBanner';
 import PartnerCard from '../components/PartnerCard';
 import { mockPartners } from '../data/mockData';
