@@ -1,0 +1,13 @@
+.filter-sidebar {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 250px;
+    height: fit-content;
+}
+.filter-group { margin-top: 20px; }
+.filter-group label { display: block; margin-bottom: 5px; font-size: 14px; }
+.filter-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+.mock-skills { display: flex; gap: 5px; flex-wrap: wrap; }
+
