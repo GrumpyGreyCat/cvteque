@@ -5,6 +5,8 @@ import Landing from './page/Landing'
 import TalentSearch from './page/TalentSearch';
 import JobSearch from './page/JobSearch';
 import PartnerSearch from './page/PartnerSearch'
+import StudentProfile from './page/StudentProfile';
+import AdminImport from './page/AdminImport'; 
 import './App.css'
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
         <Route path="/emplois" element={<JobSearch />} />
         <Route path="/partenaires" element={<PartnerSearch />} />
         <Route path='/login' element={<Login />} />
+        <Route path="/etudiant/:id" element={<StudentProfile />} />
+        <Route path="/admin" element={<AdminImport />} />
       </Routes>
     </>
   )

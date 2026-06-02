@@ -1,4 +1,4 @@
-import './PartnerCard.css';
+import './partnerCard.css';
 
 
 export default function PartnerCard({ partner }) {
