@@ -1,12 +1,61 @@
 import { useState } from 'react';
-import { Typography, ToggleButton, ToggleButtonGroup, TextField, Button, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import pour rediriger après connexion
+import { Typography, ToggleButton, ToggleButtonGroup, TextField, Button, Paper, Alert } from '@mui/material';
 import './Login.css';
 
 export default function Login() {
   const [userType, setUserType] = useState('students');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  const navigate = useNavigate();
 
   const handleTypeChange = (event, newType) => {
-    if (newType !== null) setUserType(newType);
+    if (newType !== null) {
+      setUserType(newType);
+      setError(null); // Réinitialise l'erreur si on change d'onglet
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    // Détermination dynamique de l'endpoint selon le type d'utilisateur sélectionné
+    let loginUrl = 'http://127.0.0.1:8001/api/login';
+    if (userType === 'school') loginUrl = 'http://127.0.0.1:8001/api/login-school';
+    if (userType === 'entreprise') loginUrl = 'http://127.0.0.1:8001/api/login-company';
+
+    try {
+      const response = await fetch(loginUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Identifiants incorrects ou espace indisponible.');
+      }
+
+      const data = await response.json();
+      console.log("Connexion réussie ! Données :", data);
+
+      // 1. Sauvegarder les informations de session dans le stockage du navigateur
+      localStorage.setItem('user', JSON.stringify({ ...data, type: userType }));
+
+      // 2. Redirection conditionnelle ou par défaut vers l'espace profil personnalisé
+      navigate('/profil');
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,13 +99,24 @@ export default function Login() {
             </ToggleButton>
           </ToggleButtonGroup>
 
-          <form className="login-form">
+          {/* Affichage d'un message d'erreur si l'API renvoie un échec */}
+          {error && (
+            <Alert severity="error" style={{ marginBottom: '20px' }}>
+              {error}
+            </Alert>
+          )}
+
+          <form className="login-form" onSubmit={handleSubmit}>
             <Typography className="input-label">Email</Typography>
             <TextField 
               fullWidth 
               placeholder="Adresse E-mail" 
               variant="outlined"
               className="custom-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              type="email"
             />
             
             <Typography className="input-label">Password</Typography>
@@ -66,10 +126,19 @@ export default function Login() {
               placeholder="Mot de passe" 
               variant="outlined"
               className="custom-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
 
-            <Button fullWidth variant="contained" className="login-submit">
-              Se Connecter
+            <Button 
+              fullWidth 
+              variant="contained" 
+              className="login-submit"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? 'Connexion en cours...' : 'Se Connecter'}
             </Button>
           </form>
         </Paper>
