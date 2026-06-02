@@ -1,4 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDatabase } from '../context/DataContext' // Récupération du contexte global
 import './Profile.css'
 
 const TABS = [
@@ -149,7 +151,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <input
               className="profile-input"
               type="text"
-              value={personal.fullName}
+              value={personal.fullName || ''}
               onChange={(e) => onChangePersonal({ ...personal, fullName: e.target.value })}
             />
           </label>
@@ -158,8 +160,9 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <input
               className="profile-input"
               type="email"
-              value={personal.email}
+              value={personal.email || ''}
               onChange={(e) => onChangePersonal({ ...personal, email: e.target.value })}
+              disabled
             />
           </label>
           <label className="profile-field">
@@ -167,7 +170,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <input
               className="profile-input"
               type="tel"
-              value={personal.phone}
+              value={personal.phone || ''}
               onChange={(e) => onChangePersonal({ ...personal, phone: e.target.value })}
             />
           </label>
@@ -176,7 +179,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <input
               className="profile-input"
               type="text"
-              value={personal.location}
+              value={personal.location || ''}
               onChange={(e) => onChangePersonal({ ...personal, location: e.target.value })}
             />
           </label>
@@ -185,7 +188,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <input
               className="profile-input"
               type="text"
-              value={personal.school}
+              value={personal.school || ''}
               onChange={(e) => onChangePersonal({ ...personal, school: e.target.value })}
             />
           </label>
@@ -194,7 +197,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <input
               className="profile-input"
               type="text"
-              value={personal.studyYear}
+              value={personal.studyYear || ''}
               onChange={(e) => onChangePersonal({ ...personal, studyYear: e.target.value })}
             />
           </label>
@@ -204,7 +207,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
               className="profile-input"
               type="url"
               placeholder="https://linkedin.com/in/..."
-              value={personal.linkedin}
+              value={personal.linkedin || ''}
               onChange={(e) => onChangePersonal({ ...personal, linkedin: e.target.value })}
             />
           </label>
@@ -214,7 +217,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
               className="profile-input"
               type="url"
               placeholder="https://github.com/..."
-              value={personal.github}
+              value={personal.github || ''}
               onChange={(e) => onChangePersonal({ ...personal, github: e.target.value })}
             />
           </label>
@@ -223,7 +226,7 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
             <textarea
               className="profile-input profile-textarea"
               rows={5}
-              value={personal.bio}
+              value={personal.bio || ''}
               onChange={(e) => onChangePersonal({ ...personal, bio: e.target.value })}
             />
           </label>
@@ -262,7 +265,7 @@ function FormationsTab({ formations, onCreate, onUpdate, onDelete }) {
     [],
   )
 
-  const [mode, setMode] = useState('list') // list | edit
+  const [mode, setMode] = useState('list')
   const [form, setForm] = useState(empty)
 
   const startCreate = () => {
@@ -287,7 +290,7 @@ function FormationsTab({ formations, onCreate, onUpdate, onDelete }) {
 
     if (!trimmed.title || !trimmed.school) return
 
-    if (trimmed.id) onUpdate(trimmed)
+    if (trimmed.id && typeof trimmed.id === 'number') onUpdate(trimmed)
     else onCreate({ ...trimmed, id: makeId() })
     setMode('list')
   }
@@ -314,21 +317,12 @@ function FormationsTab({ formations, onCreate, onUpdate, onDelete }) {
             />
           </label>
           <label className="profile-field">
-            <span className="profile-label">Année de début</span>
+            <span className="profile-label">Année de début / fin (ou dates)</span>
             <input
               className="profile-input"
-              inputMode="numeric"
               value={form.startYear}
+              placeholder="ex: 2024 - 2026"
               onChange={(e) => setForm({ ...form, startYear: e.target.value })}
-            />
-          </label>
-          <label className="profile-field">
-            <span className="profile-label">Année de fin</span>
-            <input
-              className="profile-input"
-              inputMode="numeric"
-              value={form.endYear}
-              onChange={(e) => setForm({ ...form, endYear: e.target.value })}
             />
           </label>
 
@@ -354,7 +348,7 @@ function FormationsTab({ formations, onCreate, onUpdate, onDelete }) {
             key={f.id}
             title={f.title}
             subtitle={f.school}
-            meta={`${f.startYear} - ${f.endYear}`}
+            meta={f.dates || `${f.startYear} - ${f.endYear}`}
             onEdit={() => startEdit(f)}
             onDelete={() => onDelete(f.id)}
           />
@@ -368,10 +362,10 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
   const empty = useMemo(
     () => ({
       id: null,
-      role: '',
+      title: '',
       company: '',
-      startYear: '',
-      endYear: '',
+      dates: '',
+      location: '',
       description: '',
     }),
     [],
@@ -394,14 +388,14 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
     e.preventDefault()
     const trimmed = {
       ...form,
-      role: form.role.trim(),
+      title: form.title.trim(),
       company: form.company.trim(),
-      startYear: form.startYear.trim(),
-      endYear: form.endYear.trim(),
+      dates: form.dates.trim(),
+      location: form.location.trim(),
       description: form.description.trim(),
     }
-    if (!trimmed.role || !trimmed.company) return
-    if (trimmed.id) onUpdate(trimmed)
+    if (!trimmed.title || !trimmed.company) return
+    if (trimmed.id && typeof trimmed.id === 'number') onUpdate(trimmed)
     else onCreate({ ...trimmed, id: makeId() })
     setMode('list')
   }
@@ -414,7 +408,7 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
         <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
           <label className="profile-field profile-fieldFull">
             <span className="profile-label">Poste occupé</span>
-            <input className="profile-input" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
+            <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
           </label>
           <label className="profile-field profile-fieldFull">
             <span className="profile-label">Entreprise</span>
@@ -425,21 +419,20 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
             />
           </label>
           <label className="profile-field">
-            <span className="profile-label">Année de début</span>
+            <span className="profile-label">Dates de la mission</span>
             <input
               className="profile-input"
-              inputMode="numeric"
-              value={form.startYear}
-              onChange={(e) => setForm({ ...form, startYear: e.target.value })}
+              value={form.dates}
+              placeholder="ex: Sept 2024 - Présent"
+              onChange={(e) => setForm({ ...form, dates: e.target.value })}
             />
           </label>
           <label className="profile-field">
-            <span className="profile-label">Année de fin</span>
+            <span className="profile-label">Localisation</span>
             <input
               className="profile-input"
-              inputMode="numeric"
-              value={form.endYear}
-              onChange={(e) => setForm({ ...form, endYear: e.target.value })}
+              value={form.location}
+              onChange={(e) => setForm({ ...form, location: e.target.value })}
             />
           </label>
           <label className="profile-field profile-fieldFull">
@@ -472,9 +465,9 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
         {experiences.map((x) => (
           <ItemCard
             key={x.id}
-            title={x.role}
+            title={x.title}
             subtitle={x.company}
-            meta={`${x.startYear} - ${x.endYear}${x.description ? ` · ${x.description}` : ''}`}
+            meta={`${x.dates} · ${x.location}${x.description ? ` · ${x.description}` : ''}`}
             onEdit={() => startEdit(x)}
             onDelete={() => onDelete(x.id)}
           />
@@ -484,7 +477,7 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
   )
 }
 
-const PROJECT_TAGS = ['React', 'Node.js', 'TypeScript', 'MongoDB', 'Docker']
+const PROJECT_TAGS = ['React', 'Node.js', 'TypeScript', 'MongoDB', 'Docker', 'Symfony', 'PostgreSQL', 'PHP']
 
 function ProjetsTab({ projects, onCreate, onUpdate, onDelete }) {
   const empty = useMemo(
@@ -506,7 +499,7 @@ function ProjetsTab({ projects, onCreate, onUpdate, onDelete }) {
   }
 
   const startEdit = (item) => {
-    setForm({ ...item })
+    setForm({ ...item, tags: item.tags || [] })
     setMode('edit')
   }
 
@@ -521,7 +514,7 @@ function ProjetsTab({ projects, onCreate, onUpdate, onDelete }) {
     e.preventDefault()
     const trimmed = { ...form, title: form.title.trim(), description: form.description.trim() }
     if (!trimmed.title) return
-    if (trimmed.id) onUpdate(trimmed)
+    if (trimmed.id && typeof trimmed.id === 'number') onUpdate(trimmed)
     else onCreate({ ...trimmed, id: makeId() })
     setMode('list')
   }
@@ -643,56 +636,65 @@ function CompetencesTab({ selected, available, onToggleTag }) {
 }
 
 export default function Profile() {
-  const [activeTab, setActiveTab] = useState('formations')
+  const [activeTab, setActiveTab] = useState('infos')
+  const navigate = useNavigate()
+  
+  // Consommation du contexte global de l'application
+  const { students } = useDatabase()
+
+  // 1. États d'affichage locaux synchronisés avec l'étudiant connecté
   const [personal, setPersonal] = useState({
-    fullName: 'Marie Dubois',
-    email: 'marie.dubois@hexagone.edu',
-    phone: '+33 6 12 34 56 78',
-    location: 'Paris, France',
-    school: 'Hexagone',
-    studyYear: 'M1',
-    linkedin: 'https://linkedin.com/in/mariedubois',
-    github: 'https://github.com/mariedubois',
-    bio: '',
+    fullName: '', email: '', phone: '', location: '',
+    school: '', studyYear: '', linkedin: '', github: '', bio: ''
   })
-
-  const [formations, setFormations] = useState(() => [
-    {
-      id: makeId(),
-      title: 'Master Développement Web & Mobile',
-      school: "Hexagone - École Supérieure d'Informatique",
-      startYear: '2024',
-      endYear: '2026',
-    },
-  ])
-
-  const [experiences, setExperiences] = useState(() => [
-    {
-      id: makeId(),
-      role: 'Stage Développeur Full-Stack',
-      company: 'TechStart Paris',
-      startYear: '2025',
-      endYear: '2025',
-      description: "Développement d'une application web avec React et Node.js.",
-    },
-  ])
-
-  const [projects, setProjects] = useState(() => [
-    {
-      id: makeId(),
-      title: 'Portfolio',
-      description: 'Application permettant aux développeurs de créer facilement leur portfolio.',
-      tags: ['React', 'Node.js'],
-    },
-  ])
+  const [formations, setFormations] = useState([])
+  const [experiences, setExperiences] = useState([])
+  const [projects, setProjects] = useState([])
+  const [cv, setCv] = useState(null)
 
   const initialAvailable = useMemo(
-    () => ['TypeScript', 'Java', 'Python', 'Docker', 'AWS', 'Git', 'Figma', 'MongoDB', 'CI/CD', 'Redux', 'Next.js'],
-    [],
+    () => ['TypeScript', 'Java', 'Python', 'Docker', 'AWS', 'Git', 'Figma', 'MongoDB', 'CI/CD', 'Redux', 'Next.js', 'React', 'Node.js', 'SQL', 'Symfony', 'PHP'],
+    []
   )
-  const [competencesSelected, setCompetencesSelected] = useState(() => ['React', 'Node.js', 'SQL'])
-  const [competencesAvailable, setCompetencesAvailable] = useState(() => initialAvailable)
-  const [cv, setCv] = useState(null)
+  const [competencesSelected, setCompetencesSelected] = useState([])
+  const [competencesAvailable, setCompetencesAvailable] = useState(initialAvailable)
+
+  // 2. Chargement dynamique de la base de données locale selon la session active
+  useEffect(() => {
+    const sessionUser = localStorage.getItem('user')
+    if (!sessionUser) {
+      navigate('/login')
+      return
+    }
+
+    const currentLoggedIn = JSON.parse(sessionUser)
+    
+    // Recherche du profil complet actualisé via l'ID de la base de données
+    const matchingStudent = students.find(s => s.id === currentLoggedIn.id)
+
+    if (matchingStudent) {
+      setPersonal({
+        fullName: matchingStudent.name,
+        email: matchingStudent.email,
+        phone: matchingStudent.phone,
+        location: matchingStudent.location,
+        school: matchingStudent.school,
+        studyYear: matchingStudent.year,
+        linkedin: matchingStudent.linkedin,
+        github: matchingStudent.github,
+        bio: matchingStudent.description,
+      })
+
+      // Récupération des relations associées directement de l'entité
+      if (matchingStudent.education) setFormations(matchingStudent.education)
+      if (matchingStudent.experiences) setExperiences(matchingStudent.experiences)
+      if (matchingStudent.projects) setProjects(matchingStudent.projects)
+      if (matchingStudent.skills) {
+        setCompetencesSelected(matchingStudent.skills)
+        setCompetencesAvailable(initialAvailable.filter(t => !matchingStudent.skills.includes(t)))
+      }
+    }
+  }, [students, navigate, initialAvailable])
 
   const toggleCompetence = (tag, from) => {
     if (from === 'selected') {
@@ -710,7 +712,7 @@ export default function Profile() {
         <header className="profile-hero" aria-label="Mon Profil">
           <div className="profile-heroInner">
             <h1 className="profile-heroTitle">
-              Mon <span>Profil</span>
+              Profil de <span>{personal.fullName || 'Étudiant'}</span>
             </h1>
           </div>
         </header>
@@ -766,15 +768,14 @@ export default function Profile() {
         </div>
 
         <footer className="profile-footer">
-          <button className="profile-footerBtn profile-footerBtnGhost" type="button">
-            Annuler
+          <button className="profile-footerBtn profile-footerBtnGhost" type="button" onClick={() => navigate('/')}>
+            Retour à l'accueil
           </button>
           <button className="profile-footerBtn profile-footerBtnPrimary" type="button">
-            Sauvegarder
+            Sauvegarder les modifications
           </button>
         </footer>
       </div>
     </main>
   )
 }
-
