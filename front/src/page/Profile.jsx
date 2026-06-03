@@ -11,10 +11,6 @@ const TABS = [
   { id: 'competences', label: 'Compétences' },
 ]
 
-function makeId() {
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`
-}
-
 function SectionHeader({ title, onAdd, addLabel = '+ ajouter' }) {
   return (
     <div className="profile-sectionHeader">
@@ -161,7 +157,6 @@ function InfosTab({ personal, onChangePersonal, cv, onCvChange }) {
               className="profile-input"
               type="email"
               value={personal.email || ''}
-              onChange={(e) => onChangePersonal({ ...personal, email: e.target.value })}
               disabled
             />
           </label>
@@ -259,8 +254,7 @@ function FormationsTab({ formations, onCreate, onUpdate, onDelete }) {
       id: null,
       title: '',
       school: '',
-      startYear: '',
-      endYear: '',
+      dates: '',
     }),
     [],
   )
@@ -274,81 +268,79 @@ function FormationsTab({ formations, onCreate, onUpdate, onDelete }) {
   }
 
   const startEdit = (item) => {
-    setForm({ ...item })
+    setForm({ ...item, dates: item.dates || '' })
     setMode('edit')
   }
 
   const submit = (e) => {
     e.preventDefault()
     const trimmed = {
-      ...form,
+      id: form.id,
       title: form.title.trim(),
       school: form.school.trim(),
-      startYear: form.startYear.trim(),
-      endYear: form.endYear.trim(),
+      dates: form.dates.trim(),
     }
 
     if (!trimmed.title || !trimmed.school) return
 
-    if (trimmed.id && typeof trimmed.id === 'number') onUpdate(trimmed)
-    else onCreate({ ...trimmed, id: makeId() })
+    if (trimmed.id && typeof trimmed.id === 'number') {
+      onUpdate(trimmed)
+    } else {
+      onCreate({ ...trimmed, id: null })
+    }
     setMode('list')
   }
 
-  if (mode === 'edit') {
-    return (
-      <section className="profile-panel">
-        <EditorHeader
-          title={form.id ? 'Éditer un parcours académique' : 'Créer un parcours académique'}
-          onReturn={() => setMode('list')}
-        />
+  return mode === 'edit' ? (
+    <section className="profile-panel">
+      <EditorHeader
+        title={form.id ? 'Éditer un parcours académique' : 'Créer un parcours académique'}
+        onReturn={() => setMode('list')}
+      />
 
-        <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">Titre de la formation</span>
-            <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          </label>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">École</span>
-            <input
-              className="profile-input"
-              value={form.school}
-              onChange={(e) => setForm({ ...form, school: e.target.value })}
-            />
-          </label>
-          <label className="profile-field">
-            <span className="profile-label">Année de début / fin (ou dates)</span>
-            <input
-              className="profile-input"
-              value={form.startYear}
-              placeholder="ex: 2024 - 2026"
-              onChange={(e) => setForm({ ...form, startYear: e.target.value })}
-            />
-          </label>
+      <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Titre de la formation</span>
+          <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+        </label>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">École</span>
+          <input
+            className="profile-input"
+            value={form.school}
+            onChange={(e) => setForm({ ...form, school: e.target.value })}
+          />
+        </label>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Années d'études (ou dates)</span>
+          <input
+            className="profile-input"
+            value={form.dates}
+            placeholder="ex: 2024 - 2026"
+            onChange={(e) => setForm({ ...form, dates: e.target.value })}
+          />
+        </label>
 
-          <div className="profile-formActions profile-fieldFull">
-            <button type="button" className="profile-iconBtn profile-iconBtnNeutral" onClick={() => setMode('list')}>
-              Annuler
-            </button>
-            <button type="submit" className="profile-iconBtn profile-iconBtnEdit">
-              Sauvegarder
-            </button>
-          </div>
-        </form>
-      </section>
-    )
-  }
-
-  return (
+        <div className="profile-formActions profile-fieldFull">
+          <button type="button" className="profile-iconBtn profile-iconBtnNeutral" onClick={() => setMode('list')}>
+            Annuler
+          </button>
+          <button type="submit" className="profile-iconBtn profile-iconBtnEdit">
+            Sauvegarder
+          </button>
+        </div>
+      </form>
+    </section>
+  ) : (
     <section className="profile-panel">
       <SectionHeader title="Parcours académiques" onAdd={startCreate} />
       <div className="profile-panelBody profile-list">
-        {formations.map((f) => (
+        {formations.map((f, i) => (
           <ItemCard
-            key={f.id}
+            key={f.id || i}
             title={f.title}
             subtitle={f.school}
-            meta={f.dates || `${f.startYear} - ${f.endYear}`}
+            meta={f.dates}
             onEdit={() => startEdit(f)}
             onDelete={() => onDelete(f.id)}
           />
@@ -387,7 +379,7 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
   const submit = (e) => {
     e.preventDefault()
     const trimmed = {
-      ...form,
+      id: form.id,
       title: form.title.trim(),
       company: form.company.trim(),
       dates: form.dates.trim(),
@@ -395,76 +387,76 @@ function ExperiencesTab({ experiences, onCreate, onUpdate, onDelete }) {
       description: form.description.trim(),
     }
     if (!trimmed.title || !trimmed.company) return
-    if (trimmed.id && typeof trimmed.id === 'number') onUpdate(trimmed)
-    else onCreate({ ...trimmed, id: makeId() })
+
+    if (trimmed.id && typeof trimmed.id === 'number') {
+      onUpdate(trimmed)
+    } else {
+      onCreate({ ...trimmed, id: null })
+    }
     setMode('list')
   }
 
-  if (mode === 'edit') {
-    return (
-      <section className="profile-panel">
-        <EditorHeader title={form.id ? 'Éditer une expérience' : 'Créer une expérience'} onReturn={() => setMode('list')} />
+  return mode === 'edit' ? (
+    <section className="profile-panel">
+      <EditorHeader title={form.id ? 'Éditer une expérience' : 'Créer une expérience'} onReturn={() => setMode('list')} />
 
-        <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">Poste occupé</span>
-            <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          </label>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">Entreprise</span>
-            <input
-              className="profile-input"
-              value={form.company}
-              onChange={(e) => setForm({ ...form, company: e.target.value })}
-            />
-          </label>
-          <label className="profile-field">
-            <span className="profile-label">Dates de la mission</span>
-            <input
-              className="profile-input"
-              value={form.dates}
-              placeholder="ex: Sept 2024 - Présent"
-              onChange={(e) => setForm({ ...form, dates: e.target.value })}
-            />
-          </label>
-          <label className="profile-field">
-            <span className="profile-label">Localisation</span>
-            <input
-              className="profile-input"
-              value={form.location}
-              onChange={(e) => setForm({ ...form, location: e.target.value })}
-            />
-          </label>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">Description</span>
-            <textarea
-              className="profile-input profile-textarea"
-              rows={5}
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-            />
-          </label>
+      <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Poste occupé</span>
+          <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+        </label>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Entreprise</span>
+          <input
+            className="profile-input"
+            value={form.company}
+            onChange={(e) => setForm({ ...form, company: e.target.value })}
+          />
+        </label>
+        <label className="profile-field">
+          <span className="profile-label">Dates de la mission</span>
+          <input
+            className="profile-input"
+            value={form.dates}
+            placeholder="ex: Sept 2024 - Présent"
+            onChange={(e) => setForm({ ...form, dates: e.target.value })}
+          />
+        </label>
+        <label className="profile-field">
+          <span className="profile-label">Localisation</span>
+          <input
+            className="profile-input"
+            value={form.location}
+            onChange={(e) => setForm({ ...form, location: e.target.value })}
+          />
+        </label>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Description</span>
+          <textarea
+            className="profile-input profile-textarea"
+            rows={5}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </label>
 
-          <div className="profile-formActions profile-fieldFull">
-            <button type="button" className="profile-iconBtn profile-iconBtnNeutral" onClick={() => setMode('list')}>
-              Annuler
-            </button>
-            <button type="submit" className="profile-iconBtn profile-iconBtnEdit">
-              Sauvegarder
-            </button>
-          </div>
-        </form>
-      </section>
-    )
-  }
-
-  return (
+        <div className="profile-formActions profile-fieldFull">
+          <button type="button" className="profile-iconBtn profile-iconBtnNeutral" onClick={() => setMode('list')}>
+            Annuler
+          </button>
+          <button type="submit" className="profile-iconBtn profile-iconBtnEdit">
+            Sauvegarder
+          </button>
+        </div>
+      </form>
+    </section>
+  ) : (
     <section className="profile-panel">
       <SectionHeader title="Expériences professionnelles" onAdd={startCreate} />
       <div className="profile-panelBody profile-list">
-        {experiences.map((x) => (
+        {experiences.map((x, i) => (
           <ItemCard
-            key={x.id}
+            key={x.id || i}
             title={x.title}
             subtitle={x.company}
             meta={`${x.dates} · ${x.location}${x.description ? ` · ${x.description}` : ''}`}
@@ -512,71 +504,71 @@ function ProjetsTab({ projects, onCreate, onUpdate, onDelete }) {
 
   const submit = (e) => {
     e.preventDefault()
-    const trimmed = { ...form, title: form.title.trim(), description: form.description.trim() }
+    const trimmed = { id: form.id, title: form.title.trim(), description: form.description.trim(), tags: form.tags }
     if (!trimmed.title) return
-    if (trimmed.id && typeof trimmed.id === 'number') onUpdate(trimmed)
-    else onCreate({ ...trimmed, id: makeId() })
+
+    if (trimmed.id && typeof trimmed.id === 'number') {
+      onUpdate(trimmed)
+    } else {
+      onCreate({ ...trimmed, id: null })
+    }
     setMode('list')
   }
 
-  if (mode === 'edit') {
-    return (
-      <section className="profile-panel">
-        <EditorHeader title={form.id ? 'Éditer un projet' : 'Créer un projet'} onReturn={() => setMode('list')} />
+  return mode === 'edit' ? (
+    <section className="profile-panel">
+      <EditorHeader title={form.id ? 'Éditer un projet' : 'Créer un projet'} onReturn={() => setMode('list')} />
 
-        <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">Titre du projet</span>
-            <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          </label>
-          <label className="profile-field profile-fieldFull">
-            <span className="profile-label">Description du projet</span>
-            <textarea
-              className="profile-input profile-textarea"
-              rows={5}
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-            />
-          </label>
+      <form className="profile-formGrid profile-formGridTight" onSubmit={submit}>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Titre du projet</span>
+          <input className="profile-input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+        </label>
+        <label className="profile-field profile-fieldFull">
+          <span className="profile-label">Description du projet</span>
+          <textarea
+            className="profile-input profile-textarea"
+            rows={5}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </label>
 
-          <div className="profile-field profile-fieldFull">
-            <div className="profile-label">Tags</div>
-            <div className="profile-tagsRow profile-tagsRowWrap">
-              {PROJECT_TAGS.map((t) => {
-                const active = form.tags.includes(t)
-                return (
-                  <button
-                    key={t}
-                    type="button"
-                    className={`profile-tagBtn ${active ? 'is-selected' : ''}`}
-                    onClick={() => toggleTag(t)}
-                  >
-                    {t}
-                  </button>
-                )
-              })}
-            </div>
+        <div className="profile-field profile-fieldFull">
+          <div className="profile-label">Tags</div>
+          <div className="profile-tagsRow profile-tagsRowWrap">
+            {PROJECT_TAGS.map((t) => {
+              const active = form.tags.includes(t)
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  className={`profile-tagBtn ${active ? 'is-selected' : ''}`}
+                  onClick={() => toggleTag(t)}
+                >
+                  {t}
+                </button>
+              )
+            })}
           </div>
+        </div>
 
-          <div className="profile-formActions profile-fieldFull">
-            <button type="button" className="profile-iconBtn profile-iconBtnNeutral" onClick={() => setMode('list')}>
-              Annuler
-            </button>
-            <button type="submit" className="profile-iconBtn profile-iconBtnEdit">
-              Sauvegarder
-            </button>
-          </div>
-        </form>
-      </section>
-    )
-  }
-
-  return (
+        <div className="profile-formActions profile-fieldFull">
+          <button type="button" className="profile-iconBtn profile-iconBtnNeutral" onClick={() => setMode('list')}>
+            Annuler
+          </button>
+          <button type="submit" className="profile-iconBtn profile-iconBtnEdit">
+            Sauvegarder
+          </button>
+        </div>
+      </form>
+    </section>
+  ) : (
     <section className="profile-panel">
       <SectionHeader title="Mes projets" onAdd={startCreate} />
       <div className="profile-panelBody profile-list">
-        {projects.map((p) => (
-          <article key={p.id} className="profile-projectCard">
+        {projects.map((p, i) => (
+          <article key={p.id || i} className="profile-projectCard">
             <div className="profile-projectTop">
               <div>
                 <h3 className="profile-itemTitle">{p.title}</h3>
@@ -639,10 +631,8 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState('infos')
   const navigate = useNavigate()
   
-  // Consommation du contexte global de l'application
-  const { students } = useDatabase()
+  const { students, refreshData } = useDatabase()
 
-  // 1. États d'affichage locaux synchronisés avec l'étudiant connecté
   const [personal, setPersonal] = useState({
     fullName: '', email: '', phone: '', location: '',
     school: '', studyYear: '', linkedin: '', github: '', bio: ''
@@ -651,6 +641,7 @@ export default function Profile() {
   const [experiences, setExperiences] = useState([])
   const [projects, setProjects] = useState([])
   const [cv, setCv] = useState(null)
+  const [isSaving, setIsSaving] = useState(false)
 
   const initialAvailable = useMemo(
     () => ['TypeScript', 'Java', 'Python', 'Docker', 'AWS', 'Git', 'Figma', 'MongoDB', 'CI/CD', 'Redux', 'Next.js', 'React', 'Node.js', 'SQL', 'Symfony', 'PHP'],
@@ -659,7 +650,6 @@ export default function Profile() {
   const [competencesSelected, setCompetencesSelected] = useState([])
   const [competencesAvailable, setCompetencesAvailable] = useState(initialAvailable)
 
-  // 2. Chargement dynamique de la base de données locale selon la session active
   useEffect(() => {
     const sessionUser = localStorage.getItem('user')
     if (!sessionUser) {
@@ -668,8 +658,6 @@ export default function Profile() {
     }
 
     const currentLoggedIn = JSON.parse(sessionUser)
-    
-    // Recherche du profil complet actualisé via l'ID de la base de données
     const matchingStudent = students.find(s => s.id == currentLoggedIn.id)
 
     if (matchingStudent) {
@@ -685,9 +673,8 @@ export default function Profile() {
         bio: matchingStudent.description,
       })
 
-      // Récupération des relations associées directement de l'entité
       if (matchingStudent.education) setFormations(matchingStudent.education)
-      if (matchingStudent.experiences) setExperiences(matchingStudent.experiences)
+      if (matchingStudent.experience) setExperiences(matchingStudent.experience)
       if (matchingStudent.projects) setProjects(matchingStudent.projects)
       if (matchingStudent.skills) {
         setCompetencesSelected(matchingStudent.skills)
@@ -703,6 +690,60 @@ export default function Profile() {
     } else {
       setCompetencesAvailable((prev) => prev.filter((t) => t !== tag))
       setCompetencesSelected((prev) => [...prev, tag].sort((a, b) => a.localeCompare(b)))
+    }
+  }
+
+  // REQUÊTE DE SAUVEGARDE STRICTE EN PUT AVEC CAPTURE D'ÉVÉNEMENT
+  const handleSave = async (e) => {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault(); // SÉCURITÉ : Bloque toute soumission GET automatique du navigateur
+    }
+
+    const sessionUser = localStorage.getItem('user')
+    if (!sessionUser) return
+    
+    const currentLoggedIn = JSON.parse(sessionUser)
+    setIsSaving(true)
+
+    const updatedProfilePayload = {
+      id: currentLoggedIn.id,
+      name: personal.fullName,
+      phone: personal.phone,
+      location: personal.location,
+      school: personal.school,
+      year: personal.studyYear,
+      linkedin: personal.linkedin,
+      github: personal.github,
+      description: personal.bio,
+      skills: competencesSelected,
+      education: formations,
+      experiences: experiences,
+      projects: projects
+    }
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/student/profile/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedProfilePayload)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || "Une erreur est survenue lors de l'enregistrement.")
+      }
+
+      alert("Profil sauvegardé avec succès en base de données !")
+      refreshData()
+      
+    } catch (error) {
+      console.error("Erreur de sauvegarde :", error)
+      alert(error.message)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -731,48 +772,53 @@ export default function Profile() {
         </nav>
 
         <div className="profile-content" role="region" aria-live="polite">
-          {activeTab === 'infos' ? (
+          {activeTab === 'infos' && (
             <InfosTab personal={personal} onChangePersonal={setPersonal} cv={cv} onCvChange={setCv} />
-          ) : null}
-          {activeTab === 'formations' ? (
+          )}
+          {activeTab === 'formations' && (
             <FormationsTab
               formations={formations}
               onCreate={(x) => setFormations((prev) => [x, ...prev])}
               onUpdate={(x) => setFormations((prev) => prev.map((p) => (p.id === x.id ? x : p)))}
               onDelete={(id) => setFormations((prev) => prev.filter((p) => p.id !== id))}
             />
-          ) : null}
-          {activeTab === 'experiences' ? (
+          )}
+          {activeTab === 'experiences' && (
             <ExperiencesTab
               experiences={experiences}
               onCreate={(x) => setExperiences((prev) => [x, ...prev])}
               onUpdate={(x) => setExperiences((prev) => prev.map((p) => (p.id === x.id ? x : p)))}
               onDelete={(id) => setExperiences((prev) => prev.filter((p) => p.id !== id))}
             />
-          ) : null}
-          {activeTab === 'projets' ? (
+          )}
+          {activeTab === 'projets' && (
             <ProjetsTab
               projects={projects}
               onCreate={(x) => setProjects((prev) => [x, ...prev])}
               onUpdate={(x) => setProjects((prev) => prev.map((p) => (p.id === x.id ? x : p)))}
               onDelete={(id) => setProjects((prev) => prev.filter((p) => p.id !== id))}
             />
-          ) : null}
-          {activeTab === 'competences' ? (
+          )}
+          {activeTab === 'competences' && (
             <CompetencesTab
               selected={competencesSelected}
               available={competencesAvailable}
               onToggleTag={toggleCompetence}
             />
-          ) : null}
+          )}
         </div>
 
         <footer className="profile-footer">
           <button className="profile-footerBtn profile-footerBtnGhost" type="button" onClick={() => navigate('/')}>
             Retour à l'accueil
           </button>
-          <button className="profile-footerBtn profile-footerBtnPrimary" type="button">
-            Sauvegarder les modifications
+          <button 
+            className="profile-footerBtn profile-footerBtnPrimary" 
+            type="button"
+            onClick={(e) => handleSave(e)} // Événement capturé et transmis ici sans ambiguïté
+            disabled={isSaving}
+          >
+            {isSaving ? 'Enregistrement...' : 'Sauvegarder les modifications'}
           </button>
         </footer>
       </div>

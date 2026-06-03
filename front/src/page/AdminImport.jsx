@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // <-- CORRECTION : Import manquant pour la redirection
+import { useDatabase } from '../context/DataContext'; // <-- CORRECTION : Import manquant pour le rafraîchissement des données
 import './adminImport.css';
 import HeaderBanner from '../components/HeaderBanner';
 
@@ -7,6 +9,8 @@ export default function AdminImport() {
     const [fileName, setFileName] = useState('');
     const [status, setStatus] = useState(''); 
     const [errorMessage, setErrorMessage] = useState('');
+    const { refreshData } = useDatabase();
+    const navigate = useNavigate();
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -41,7 +45,7 @@ export default function AdminImport() {
     const handleStudentChange = (index, field, value) => {
         const newData = [...fileData];
         
-        // Gestion speciale pour les competences (on transforme la string en tableau)
+        // Gestion spéciale pour les compétences (on transforme la string en tableau)
         if (field === 'skills') {
             const skillsArray = value.split(',').map(s => s.trim()).filter(s => s !== '');
             newData[index] = { ...newData[index], [field]: skillsArray };
@@ -65,12 +69,30 @@ export default function AdminImport() {
         if (!fileData || fileData.length === 0) return;
         setStatus('loading');
 
-        setTimeout(() => {
-            console.log("Données parfaites envoyées à Symfony (BDD) :", fileData);
+        // Note : J'ai laissé 127.0.0.1:8000 selon ton code, ajuste le port si ton Symfony est sur le 8001
+        fetch('http://127.0.0.1:8000/api/admin/import-students', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fileData)
+        })
+        .then(async (res) => {
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erreur d'import.");
+            
+            // On force le rafraîchissement global du DataContext pour inclure les nouveaux profils
+            refreshData(); 
+
             setStatus('success');
             setFileData(null);
             setFileName('');
-        }, 1500);
+
+            // REDIRECTION IMMÉDIATE : On l'envoie sur la page de recherche de talents
+            navigate('/etudiants'); 
+        })
+        .catch((error) => {
+            setStatus('error');
+            setErrorMessage(error.message);
+        });
     };
 
     return (

@@ -35,3 +35,4 @@ security:
         - { path: ^/api/jobs, roles: PUBLIC_ACCESS }
         - { path: ^/api/schools, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/student/profile/update, roles: PUBLIC_ACCESS }
