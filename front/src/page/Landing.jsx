@@ -1,4 +1,5 @@
-import './Landing.css'
+import { useNavigate } from 'react-router-dom';
+import './Landing.css';
 
 const steps = [
 	{
@@ -19,6 +20,8 @@ const steps = [
 ]
 
 export default function Landing() {
+	const navigate = useNavigate();
+
 	return (
 		<main className="landing-page">
 			<section className="hero-section" aria-labelledby="hero-title">
@@ -34,10 +37,20 @@ export default function Landing() {
 					</p>
 
 					<div className="hero-actions">
-						<button className="hero-button hero-button-primary" type="button">
+						<button 
+                            className="hero-button hero-button-primary" 
+                            type="button"
+                            onClick={() => navigate('/etudiants')}
+                        >
 							recherche de profil
 						</button>
-						<button className="hero-button hero-button-secondary" type="button">
+                        
+                        {/* et ici */}
+						<button 
+                            className="hero-button hero-button-secondary" 
+                            type="button"
+                            onClick={() => navigate('/partenaires')}
+                        >
 							Ecoles partenaires
 						</button>
 					</div>
@@ -71,7 +84,11 @@ export default function Landing() {
 			</section>
 
 			<section className="cta-section" aria-label="Commencer maintenant">
-				<button className="cta-button" type="button">
+				<button 
+                    className="cta-button" 
+                    type="button"
+                    onClick={() => navigate('/login')}
+                >
 					Commencer maintenant <span aria-hidden="true">→</span>
 				</button>
 			</section>

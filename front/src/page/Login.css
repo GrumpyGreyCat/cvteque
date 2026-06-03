@@ -1,6 +1,5 @@
-/* Container Layout */
 .login-page {
-  background-color: #F4F1E9; /* Light cream background from image */
+  background-color: #F4F1E9;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -14,9 +13,9 @@
   align-items: center;
   max-width: 1100px;
   width: 90%;
+  margin: 40px 0;
 }
 
-/* Hero Section (Blue Card) */
 .hero-card {
   background-color: #2D4676;
   color: white;
@@ -24,6 +23,7 @@
   border-radius: 40px;
   flex: 1;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-sizing: border-box;
 }
 
 .hero-title {
@@ -33,7 +33,7 @@
 }
 
 .highlight {
-  color: #F9A826; /* Gold color */
+  color: #F9A826;
 }
 
 .hero-desc {
@@ -61,13 +61,13 @@
   font-size: 1.2rem;
 }
 
-/* Form Section (White Card) */
 .form-card {
   background: white !important;
   padding: 50px !important;
   border-radius: 50px !important;
   flex: 0.9;
   min-width: 400px;
+  box-sizing: border-box;
 }
 
 .form-title {
@@ -76,7 +76,6 @@
   font-family: serif !important;
 }
 
-/* Toggle Group Styling */
 .toggle-group {
   border: 1px solid #E0E0E0 !important;
   border-radius: 12px !important;
@@ -94,7 +93,7 @@
 
 .toggle-btn.Mui-selected {
   background-color: #2D4676 !important;
-  color: #F9A826 !important; /* Gold icons/text when active */
+  color: #F9A826 !important;
 }
 
 .toggle-btn span {
@@ -102,7 +101,6 @@
   margin-top: 5px;
 }
 
-/* Form Inputs */
 .input-label {
   color: #2D4676;
   font-weight: 500;
@@ -117,7 +115,6 @@
   border-radius: 12px;
 }
 
-/* Submit Button */
 .login-submit {
   background-color: #2D4676 !important;
   text-transform: none !important;
@@ -129,4 +126,25 @@
 
 .login-submit:hover {
   background-color: #1e3155 !important;
+}
+
+@media (max-width: 950px) {
+  .login-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .hero-card, .form-card {
+    width: 100%;
+    flex: none;
+  }
+
+  .form-card {
+    min-width: 0;
+    padding: 30px !important;
+  }
+  
+  .hero-card {
+    padding: 40px 30px;
+  }
 }
