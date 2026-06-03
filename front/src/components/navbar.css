@@ -49,6 +49,7 @@
     letter-spacing: 0.01em;
     transition: opacity 0.2s ease;
 }
+
 .link-part a:hover {
     opacity: 0.8;
 }
@@ -65,4 +66,25 @@
 .login-btn:hover {
     background-color: #ffc240;
     opacity: 1 !important;
+}
+
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; 
+        gap: 15px; 
+        padding: 15px;
+    }
+
+    .link-part {
+        flex-wrap: wrap;
+        justify-content: center; 
+        gap: 15px; 
+        width: 100%;
+    }
+    .login-btn {
+        margin-top: 5px;
+        width: 100%;
+        text-align: center;
+    }
 }
