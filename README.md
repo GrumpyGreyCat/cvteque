@@ -1,4 +1,4 @@
-# Plateforme de Recrutement et Gestion de Talents - École Hexagone
+# Plateforme de Recrutement et Gestion de Talents - École Hexagone (School Project)
 
 Cette application web complète permet de mettre en relation les étudiants de l'école (gestion de profil, CV, parcours académique, projets, compétences) avec des recruteurs, tout en offrant aux administrateurs un espace de gestion et d'importation de masse.
 
